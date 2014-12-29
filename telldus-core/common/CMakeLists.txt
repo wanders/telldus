@@ -31,16 +31,12 @@ INCLUDE_DIRECTORIES( ${CMAKE_SOURCE_DIR} )
 
 IF (APPLE)
 	#### Mac OS X ####
-	FIND_LIBRARY(ICONV_LIBRARY iconv)
 	ADD_DEFINITIONS( -D_MACOSX )
 	LIST(APPEND  telldus-common_SRCS
 		Event_unix.cpp
 		EventHandler_unix.cpp
 		Socket_unix.cpp
 		stdlibc_workaround.cpp #Remove this when we drop support for 10.5
-	)
-	LIST(APPEND telldus-common_LIBRARIES
-		${ICONV_LIBRARY}
 	)
 ELSEIF (WIN32)
 	#### Windows ####
@@ -54,15 +50,11 @@ ELSEIF (WIN32)
 	)
 ELSEIF (CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
 	#### FreeBSD ####
-	FIND_LIBRARY(ICONV_LIBRARY iconv)
 	ADD_DEFINITIONS( -D_FREEBSD )
 	LIST(APPEND  telldus-common_SRCS
 		Event_unix.cpp
 		EventHandler_unix.cpp
 		Socket_unix.cpp
-	)
-	LIST(APPEND telldus-common_LIBRARIES
-		${ICONV_LIBRARY}
 	)
 ELSE (APPLE)
 	#### Linux ####
@@ -74,6 +66,13 @@ ELSE (APPLE)
 	)
 ENDIF (APPLE)
 
+
+
+find_package(Iconv)
+
+LIST(APPEND telldus-common_LIBRARIES
+  ${ICONV_LIBRARIES}
+  )
 
 ######## Configuring  ########
 

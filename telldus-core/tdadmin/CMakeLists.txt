@@ -23,25 +23,18 @@ ADD_DEFINITIONS( -DVERSION="${DISPLAYED_VERSION}" )
 
 IF (WIN32)
 	FIND_LIBRARY(TELLDUSCORE_LIBRARY TelldusCore)
-	TARGET_LINK_LIBRARIES(tdadmin
-		${TELLDUSCORE_LIBRARY}
-	)
 ELSEIF (APPLE)
-	TARGET_LINK_LIBRARIES(tdadmin
-		TelldusCore
-	)
-ELSEIF (CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
-	# FreeBSD does not have argp in base libc; port devel/argp-standalone is required.
-	FIND_LIBRARY(ARGP_LIBRARY argp)
-	TARGET_LINK_LIBRARIES(tdadmin
-		${CMAKE_BINARY_DIR}/client/libtelldus-core.so
-		${ARGP_LIBRARY}
-	)
+	SET(TELLDUSCORE_LIBRARY TelldusCore)
 ELSE (WIN32)
-	TARGET_LINK_LIBRARIES(tdadmin
-		${CMAKE_BINARY_DIR}/client/libtelldus-core.so
-	)
+	SET(TELLDUSCORE_LIBRARY ${CMAKE_BINARY_DIR}/client/libtelldus-core.so)
 ENDIF (WIN32)
+
+find_package(Argp)
+TARGET_LINK_LIBRARIES(tdadmin
+  ${TELLDUSCORE_LIBRARY}
+  ${ARGP_LIBRARIES}
+  )
+
 
 IF (UNIX)
 	IF (GENERATE_MAN)
